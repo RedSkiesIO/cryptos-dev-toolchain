@@ -1,0 +1,3 @@
+[submodule "cryports"]
+	path = cryports
+	url = ssh://git@git.acf.atlas:5322/git-server/repos/cryports.git

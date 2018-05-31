@@ -1,0 +1,9 @@
+*/**/.DS_Store
+_data/artifacts/repo/cryptos/*
+artifacts/*.iso
+artifacts/*.tar.gz
+artifacts/repo/*
+cryports
+*/**/*.rsa
+*/**/*.key
+*/**/*.pem
