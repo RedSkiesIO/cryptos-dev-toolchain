@@ -33,8 +33,8 @@ abuild-keygen
 
 docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
--v `pwd`/_data/cryports/cryptos/csyslinux:/home/builder/cryptos/src \
--v `pwd`/_data/artifacts/repo:/home/builder/packages/ \
+-v `pwd`/cryports/cryptos/cryptos-syslinux:/home/builder/cryptos/src \
+-v `pwd`/artifacts/repo:/home/builder/packages/ \
 cryptos-dev-toolchain:dev \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
