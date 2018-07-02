@@ -2,16 +2,11 @@ FROM alpine:edge
 
 ADD _data/apk/repositories /etc/apk
 
-ADD _data/artifacts/repo/cryptos /home/builder/repo/cryptos
-
-ADD _data/abuild/james.kirby@atlascityfinace.com-5b007364.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b007364.rsa.pub
+ADD _data/abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
 
 RUN apk update
 
-#cmkinitfs
-#syslinux
-
-RUN apk --no-cache add alpine-sdk sudo abuild build-base git squashfs-tools xorriso acct mtools build-base apk-tools busybox fakeroot xorriso mtools dosfstools grub-efi coreutils cmake 
+RUN apk --no-cache add coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
 
 RUN mkdir -p /var/cache/distfiles && \
     adduser -D builder -s /bin/ash && \
