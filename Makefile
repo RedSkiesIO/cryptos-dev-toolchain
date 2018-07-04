@@ -1,8 +1,8 @@
 .PHONY: build-repo
-build-repo: build-container build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf sign-x8664 sign-noarch
+build-repo: build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf sign-x8664 sign-noarch
 
 build-container:
-	docker build .
+	docker build . --tag cryptos-dev-toolchain:dev
 
 build-csyslinux:
 	docker run \
@@ -70,3 +70,5 @@ sign-noarch:
 	cryptos-dev-toolchain:dev \
 	sh -c "cd /home/builder/packages && apk index -o noarch/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
+clean-docker:
+	docker rm -f $(docker ps -a -q)
