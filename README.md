@@ -35,7 +35,7 @@ docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
 -v `pwd`/cryports/cryptos/cryptos-syslinux:/home/builder/cryptos/src \
 -v `pwd`/artifacts/repo:/home/builder/packages/ \
-cryptos-dev-toolchain:bleed \
+cryptos-dev-toolchain:dev \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 ## Build crytos-sdk Package
@@ -44,7 +44,7 @@ docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
 -v `pwd`/cryports/cryptos/cryptos-sdk:/home/builder/cryptos/src \
 -v `pwd`/artifacts/repo:/home/builder/packages/ \
-alpine-dev-toolchain:dev \
+cryptos-dev-toolchain:dev  \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 ## Build crytos-baselayout Package
@@ -53,7 +53,7 @@ docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
 -v `pwd`/cryports/cryptos/cryptos-baselayout:/home/builder/cryptos/src \
 -v `pwd`/artifacts/repo:/home/builder/packages/ \
-cryptos-dev-toolchain:bleed \
+cryptos-dev-toolchain:dev \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 ## Build crytos-base Package
@@ -62,7 +62,7 @@ docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
 -v `pwd`/cryports/cryptos/cryptos-base:/home/builder/cryptos/src \
 -v `pwd`/artifacts/repo:/home/builder/packages/ \
-cryptos-dev-toolchain:bleed \
+cryptos-dev-toolchain:dev \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 ## build cmkinitfs Package
@@ -73,7 +73,7 @@ docker run \
 -v `pwd`/artifacts/repo:/home/builder/packages/ \
 --env srcdir=/home/builder/cryptos/src/src \
 --env builddir=/home/builder/cryptos/src/mkinitfs-0.0.1 \
-cryptos-dev-toolchain:bleed \
+cryptos-dev-toolchain:dev \
 sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 
@@ -92,13 +92,13 @@ sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
--v `pwd`/_data/artifacts/repo/cryptos:/home/builder/packages/ \
+-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
 cryptos-dev-toolchain:dev \
 sh -c "cd /home/builder/packages && apk index -o x86_64/APKINDEX.tar.gz x86_64/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
 docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
--v `pwd`/_data/artifacts/repo/cryptos:/home/builder/packages/ \
+-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
 cryptos-dev-toolchain:dev \
 sh -c "cd /home/builder/packages && apk index -o noarch/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
