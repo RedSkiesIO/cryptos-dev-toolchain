@@ -1,8 +1,14 @@
 .PHONY: build-repo
 build-repo: build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf
 
-.PHONY: sign-repo
-sign-repo: sign-x8664 sign-noarch
+.PHONY: sign-x8664
+sign-x8664: sign-x8664
+
+.PHONY: sign-noarch
+sign-noarch: sign-noarch
+
+.PHONY: sign-all
+sign-all: sign-x8664 sign-noarch
 
 build-container:
 	docker build . --tag cryptos-dev-toolchain:dev
