@@ -1,16 +1,22 @@
 ## Build standard x86_64 profile.
-
+ sudo apk add debootstrap
+ for i in /proc/sys/kernel/grsecurity/chroot_*; do echo 0 | sudo tee $i; done
+ mkdir ~/chroot
+ sudo debootstrap --arch=amd64 stretch ~/chroot http://http.debian.net/debian/
+ for i in /proc/sys/kernel/grsecurity/chroot_*; do echo 1 | sudo tee $i; done
+ sudo chroot ~/chroot /bin/bash
+ 
 docker run \
 -v `pwd`/_data/abuild:/home/builder/.abuild \
 -v `pwd`/cryports:/home/builder/cryports \
 -v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
 -v `pwd`/artifacts/repo/iso/:/home/builder/iso \
-cryptos-dev-toolchain:bleed \
+cryptos-dev-toolchain:dev \
 sh ./cryports/scripts/mkimage.sh \
 --tag edge \
 --outdir /home/builder/iso \
 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
---extra-repository http://10.84.172.242:8000/cryptos \
+--extra-repository http://10.84.172.107 \
 --arch x86_64 \
 --profile standard
 

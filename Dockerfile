@@ -4,10 +4,6 @@ ADD _data/apk/repositories /etc/apk
 
 ADD _data/abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
 
-RUN apk update
-
-RUN apk --no-cache add coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
-
 RUN mkdir -p /var/cache/distfiles && \
     adduser -D builder -s /bin/ash && \
     addgroup builder abuild && \
@@ -16,6 +12,16 @@ RUN mkdir -p /var/cache/distfiles && \
     echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/*
+
+RUN chgrp abuild /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub && \
+    chmod g+w /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
+
+RUN chgrp -Rf abuild /home/builder && \
+    chmod -Rf g+w /home/builder
+
+RUN apk update
+
+RUN apk --no-cache add coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
 
 USER builder
 
