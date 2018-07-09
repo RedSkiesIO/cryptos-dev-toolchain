@@ -65,7 +65,7 @@ build-conf:
 	cryptos-dev-toolchain:dev \
 	sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
-build-standard-iso:
+build-standard-x8664-iso:
 	docker run \
 		-v `pwd`/_data/abuild:/home/builder/.abuild \
 		-v `pwd`/cryports:/home/builder/cryports \
@@ -79,6 +79,126 @@ build-standard-iso:
 		--extra-repository http://10.84.172.107 \
 		--arch x86_64 \
 		--profile standard
+
+build-standard-x86-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch x86 \
+		--profile standard
+
+build-standard-ppc64le-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch ppc64le \
+		--profile standard		
+
+build-virtual-x8664-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch x86_64 \
+		--profile virt
+
+build-virtual-x86-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch x86 \
+		--profile virt				
+
+build-rpi-aarch64-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch aarch64 \
+		--profile rpi
+
+build-rpi-armhf-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch armhf \
+		--profile rpi
+
+build-uboot-aarch64-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch aarch64 \
+		--profile uboot
+
+build-uboot-armhf-iso:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports:/home/builder/cryports \
+		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+		cryptos-dev-toolchain:dev \
+		sh ./cryports/scripts/mkimage.sh \
+		--tag edge \
+		--outdir /home/builder/iso \
+		--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+		--extra-repository http://10.84.172.107 \
+		--arch armhf \
+		--profile uboot			
 
 sign-x8664:
 	docker run \

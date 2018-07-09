@@ -17,8 +17,8 @@ sh ./cryports/scripts/mkimage.sh \
 --outdir /home/builder/iso \
 --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
 --extra-repository http://10.84.172.107 \
---arch x86_64 \
---profile standard
+--arch armhf \
+--profile rpi
 
 sh ./aports/scripts/mkimage.sh \
 --tag edge \
