@@ -21,7 +21,7 @@ RUN chgrp -Rf abuild /home/builder && \
 
 RUN apk update
 
-RUN apk --no-cache add coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
+RUN apk --no-cache add squashfs-tools coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
 
 USER builder
 
