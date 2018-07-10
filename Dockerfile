@@ -1,5 +1,11 @@
 FROM alpine:edge
 
+ARG ctarget
+ENV CTARGET=$ctarget
+
+ARG chost
+ENV CHOST=$chost
+
 ADD _data/apk/repositories /etc/apk
 
 ADD _data/abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
