@@ -2,7 +2,7 @@
  sudo apk add debootstrap
  for i in /proc/sys/kernel/grsecurity/chroot_*; do echo 0 | sudo tee $i; done
  mkdir ~/chroot
- sudo debootstrap --arch=amd64 stretch ~/chroot http://http.debian.net/debian/
+ sudo debootstrap --arch=i386 wheezy ~/chroot http://http.debian.net/debian/
  for i in /proc/sys/kernel/grsecurity/chroot_*; do echo 1 | sudo tee $i; done
  sudo chroot ~/chroot /bin/bash
  

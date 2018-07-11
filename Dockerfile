@@ -1,55 +1,57 @@
-FROM alpine:edge
+    FROM alpine:edge
 
-ARG ctarget
-ENV CTARGET=$ctarget
+    ARG ctarget
+    ENV CTARGET=$ctarget
 
-ARG chost
-ENV CHOST=$chost
+    ARG chost
+    ENV CHOST=$chost
 
-ADD _data/apk/repositories /etc/apk
+    ADD _data/apk/repositories /etc/apk
 
-ADD _data/abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
+    ADD _data/apk/alpine-devel@lists.alpinelinux.org-524d27bb.rsa.pub /etc/apk/keys
 
-RUN mkdir -p /var/cache/distfiles && \
-    adduser -D builder -s /bin/ash && \
-    addgroup builder abuild && \
-    chgrp abuild /var/cache/distfiles && \
-    chmod g+w /var/cache/distfiles && \
-    echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
-    rm -rf /var/cache/apk/* && \
-    rm -rf /tmp/*
+    ADD _data/abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
 
-RUN chgrp abuild /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub && \
-    chmod g+w /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
+    RUN mkdir -p /var/cache/distfiles && \
+        adduser -D builder -s /bin/ash && \
+        addgroup builder abuild && \
+        chgrp abuild /var/cache/distfiles && \
+        chmod g+w /var/cache/distfiles && \
+        echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+        rm -rf /var/cache/apk/* && \
+        rm -rf /tmp/*
 
-RUN chgrp -Rf abuild /home/builder && \
-    chmod -Rf g+w /home/builder
+    RUN chgrp abuild /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub && \
+        chmod g+w /etc/apk/keys/james.kirby@atlascityfinace.com-5b1125f6.rsa.pub
 
-RUN apk update
+    RUN chgrp -Rf abuild /home/builder && \
+        chmod -Rf g+w /home/builder
 
-RUN apk --no-cache add squashfs-tools coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
+    RUN apk update
 
-USER builder
+    RUN apk --no-cache add binutils bison flex texinfo zlib-dev squashfs-tools coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
 
-WORKDIR /home/builder
+    USER builder
 
-ARG startdir
-ENV startdir=$startdir
+    WORKDIR /home/builder
 
-ARG srcdir
-ENV srcdir=$srcdir
+    ARG startdir
+    ENV startdir=$startdir
 
-ARG pkgdir
-ENV pkgdir=$pkgdir
+    ARG srcdir
+    ENV srcdir=$srcdir
 
-ARG pkgver
-ENV pkgver=$pkgver
+    ARG pkgdir
+    ENV pkgdir=$pkgdir
 
-ARG subpkgdir
-ENV subpkgdir=$subpkgdir
+    ARG pkgver
+    ENV pkgver=$pkgver
 
-ARG builddir
-ENV builddir=$builddir
+    ARG subpkgdir
+    ENV subpkgdir=$subpkgdir
 
-ARG arch
-ENV arch=$arch
+    ARG builddir
+    ENV builddir=$builddir
+
+    ARG arch
+    ENV arch=$arch
