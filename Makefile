@@ -1,5 +1,6 @@
+# do a build-repo target for each arch type
 .PHONY: build-repo
-build-repo: build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf
+build-repo: build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf build-opennode 
 
 .PHONY: sign-x8664
 sign-x8664: sign-x8664
@@ -12,6 +13,14 @@ sign-all: sign-x8664 sign-noarch
 
 build-container:
 	docker build . --tag cryptos-dev-toolchain:dev
+
+build-opennode:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/cryports/cryptos/opennode:/home/builder/cryptos/src \
+		-v `pwd`/artifacts/repo:/home/builder/packages/ \
+		cryptos-dev-toolchain:dev \
+		sh -c "cd cryptos/src && abuild checksum && abuild -R -c"
 
 build-csyslinux:
 	docker run \
