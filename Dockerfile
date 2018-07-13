@@ -29,7 +29,7 @@
 
     RUN apk update
 
-    RUN apk --no-cache add crypto++-dev binutils bison flex texinfo zlib-dev squashfs-tools coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
+    RUN apk --no-cache add crypto++-dev alpine-keys binutils bison flex texinfo zlib-dev squashfs-tools coreutils alpine-sdk abuild build-base abuild apk-tools alpine-conf fakeroot syslinux xorriso mtools dosfstools grub-efi
 
     RUN ln -s /usr/include/cryptopp /usr/include/crypto++
 
