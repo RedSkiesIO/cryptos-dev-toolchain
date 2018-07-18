@@ -7,18 +7,18 @@
  sudo chroot ~/chroot /bin/bash
  
 docker run \
--v `pwd`/_data/abuild:/home/builder/.abuild \
--v `pwd`/cryports:/home/builder/cryports \
--v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
--v `pwd`/artifacts/repo/iso/:/home/builder/iso \
-cryptos-dev-toolchain:dev \
-sh ./cryports/scripts/mkimage.sh \
---tag edge \
---outdir /home/builder/iso \
---repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
---extra-repository http://10.84.172.107 \
---arch armhf \
---profile rpi
+    -v `pwd`/_data/abuild:/home/builder/.abuild \
+    -v `pwd`/cryports:/home/builder/cryports \
+    -v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+    -v `pwd`/artifacts/repo/iso/:/home/builder/iso \
+    dbuild:x8664 \
+    sh ./cryports/scripts/mkimage.sh \
+    --tag edge \
+    --outdir /home/builder/iso \
+    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+    --extra-repository http://10.84.172.107 \
+    --arch armhf \
+    --profile rpi
 
 sh ./aports/scripts/mkimage.sh \
 --tag edge \

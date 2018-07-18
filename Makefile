@@ -241,5 +241,19 @@ sign-noarch:
 		cryptos-dev-toolchain:dev \
 		sh -c "cd /home/builder/packages && apk index -o noarch/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
+sign-armhf:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
+		dbuild:armhf \
+		sh -c "cd /home/builder/packages/armhf && apk index -o APKINDEX.tar.gz && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa APKINDEX.tar.gz"
+
+sign-aarch64:
+	docker run \
+		-v `pwd`/_data/abuild:/home/builder/.abuild \
+		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
+		cryptos-dev-toolchain:dev \
+		sh -c "cd /home/builder/packages && apk index -o aarch64/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
+
 clean-docker:
 	docker rm -f $(docker ps -a -q)

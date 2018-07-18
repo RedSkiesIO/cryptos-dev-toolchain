@@ -1,3 +1,6 @@
 [submodule "cryports"]
 	path = cryports
 	url = ssh://git@git.acf.atlas:5322/git-server/repos/cryports.git
+[submodule "dbuild"]
+	path = dbuild
+	url = ssh://git@git.acf.atlas:5322/git-server/repos/cryptos-docker-build.git

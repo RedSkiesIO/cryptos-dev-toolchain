@@ -6,3 +6,4 @@ artifacts/repo/*
 */**/*.rsa
 */**/*.key
 */**/*.pem
+.*.swp
