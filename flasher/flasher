@@ -1,0 +1,326 @@
+#!/bin/bash
+version=0.0.1
+RELEASE_URL=http://iso.cryports.acf.atlas/
+CRYPTOS_ARMHF=alpine-rpi-edge-armhf.tar.gz
+declare -a PARTITION_LABELS=('OPS' 'KEYS' 'SYS');
+
+# Check script is being run as root
+if [ `id -u` != 0 ] ; then
+    echo "You must be root to be a flasher!"
+    exit 1
+fi
+
+# Usage prompt
+usage()
+{
+cat << EOF
+usage: $0 options
+
+Flash an SD card with image.
+
+OPTIONS:
+   -h      Show this message
+   -d	   Valid path to usb/sd device
+   -z      Zero out SD card
+   -s	   Card format strategy for different host systems. Can be either rpi or standard
+   -r      Select the CryptOS release type, there are three actively maintained release types - stable, testing, unstable
+   -a	   Select the desired architecture - x86_64, armhf
+   -v      Verbose
+EOF
+}
+
+# Set empty arg vars
+DEVICE=
+ZERO=
+STRATEGY=
+RELEASE=
+MIRROR=
+ISOARCH=
+VERBOSE=
+
+# Get opts and set vars
+while getopts “d:z:s:r:a:v” OPTION
+do
+     case $OPTION in
+         h)
+             usage
+             exit 1
+             ;;
+         d)
+             DEVICE=$OPTARG
+             ;;
+         z)
+             ZERO=$OPTARG
+             ;;
+	 s)
+	     STRATEGY=$OPTARG
+	     ;;
+         r)
+	     RELEASE=$OPTARG
+	     ;;
+	 m)
+	     MIRROR=$OPTARG
+             ;;
+	 a)
+	     ISOARCH=$OPTARG
+             ;;
+         v)
+             VERBOSE=1
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
+done
+
+# Check required vars are set
+if [[ -z $DEVICE ]] ; then
+     usage
+     exit 1
+fi
+
+# Check the device exists
+if [[ ! -e $DEVICE ]] ; then
+    echo "Device does not exist! Have you tried plugging it in?"
+    exit 1
+fi
+
+# Check release CryptOS release type
+if [[ -z $RELEASE ]] ; then
+    RELEASE=stable
+elif [[ $RELEASE != "stable" ]] && [[ $RELEASE != "testing" ]] && [[ $RELEASE != "unstable" ]] ; then
+    echo 'Unknown CryptOS release type set'
+    usage
+    exit 1
+fi
+
+# Check disk formatting strategy exists
+if [[ $STRATEGY == 'rpi' ]] ; then
+    echo 'Executing rPi strategy'
+elif [[ $STRATEGY == 'standard' ]] ; then
+    echo 'Executing standard strategy'
+else
+    echo 'You specified an unknown format strategy, did you not even bother to read the usage I specifically coded to stop this happening?'
+    usage
+    exit 1
+fi
+
+# Check the target arch and sanity check
+if [[ $ISOARCH != "x86_64" ]] && [[ $ISOARCH != "armhf" ]] ; then
+    echo 'How am I supposed to know what architecture to build for if you dont tell me!'
+    usage
+    exit 1
+elif [[ $STRATEGY == "rpi" && $ISOARCH != "armhf" ]] ; then
+    echo $STRATEGY "must use the armhf architecture, you set" $ISOARCH "which is impossible!"
+    exit 1
+elif [[ $STRATEGY == "standard" && $ISOARCH != "x86_64" ]] ; then
+    echo $STRATEGY "must use the x86_64 architecture, you set" $ISOARCH "which is impossible!"
+    exit 1
+fi
+
+# Check if zero wipe is set
+if [[ -z $ZERO ]] ; then
+    WIPE=false
+fi
+
+# Check if a release mirror is set
+if [[ -n $MIRROR ]] ; then
+    RELEASE_URL=$MIRROR
+fi
+
+# Destructive warning
+echo -n "This is a destructive operation and will delete everything on ${DEVICE} do you wish to continue (y/n)? "
+read answer
+
+if [[ "$answer" != "${answer#[Yy]}" ]] ;then
+    echo 'Uploading your porn collection to the cloud and wiping your HDD now. LOL'
+    echo -ne '#####                     (33%)\r'
+    sleep 1
+    echo -ne '#############             (66%)\r'
+    sleep 1
+    echo -ne '#######################   (100%)\r'
+    echo -ne '\n'
+else
+    exit 1
+fi
+
+get_device_partitions() {
+    PARTITIONS=($(sudo fdisk -l $DEVICE | grep '^/dev' | cut -d' ' -f1))
+}
+
+# Flush partitions from kernal
+flush_changes() {
+    echo 'Flushing changes'
+    partprobe $DEVICE -s
+}
+
+# Flash strategy for rPi
+rpi_flash() {
+    echo 'Starting rPi flash strategy'
+
+
+    # mount partitions
+    index=1    
+    for i in "${PARTITION_LABELS[@]}"; do
+        if [ ! -d "/mnt/flasher/${i}/" ]; then
+            echo "Creating flasher ${i} mnt dir"
+            mkdir -p /mnt/flasher/${i}
+        fi
+        echo "mounting ${i} partition to /mnt/flasher/${i}"
+        MNT_TEST=`mount | grep "/mnt/flasher/${i}" | awk ' {print $3}'`
+
+        if [[ MNT_TEST != "/mnt/flasher/${i}" ]] ; then
+            mount -v -w -n /dev/mmcblk0p1 /mnt/flasher/${i}/
+        fi
+        let index++
+    done
+
+    # Copy FS to target
+    cp -Rfv $TDIR/src/* /mnt/flasher/OPS/
+
+    # Add rPi usercfg
+    touch /mnt/flasher/OPS/usercfg.txt
+    echo "enable_urt=1" >> /mnt/flasher/OPS/usercfg.txt
+
+    sync -f
+
+}
+
+# Flash strategy from standard iso
+standard_flash() {
+    echo 'Starting standard iso flash strategy'
+}
+
+# Get mount point of device
+MNT=`findmnt -noSOURCE,TARGET $DEVICE | cut -f 2,3 -d ' '`
+
+# Un-mount it if mounted
+if [[ -z "$MNT" ]] ; then
+    echo $DEVICE 'not mounted'
+else
+    echo "Un-mounting "$DEVICE " at " $MNT
+    umount -A ${MNT} -l
+fi
+
+# Zero out SD card
+if [[ $ZERO ]] ; then
+    echo Wiping $DEVICE
+    dd if=/dev/zero of=$DEVICE conv=fsync status=progress
+fi
+
+# Get all partitions that belong to target device
+get_device_partitions
+
+if [[ ${#PARTITIONS[@]} > 0 ]] ; then
+    echo 'found the following partitions ' printf '%s\n' "${PARTITIONS[@]}"
+
+    # Delete all them partitions
+    index=1
+    for i in "${PARTITIONS[@]}"; do
+        echo "Say good bye to " $i
+        (echo d; echo $index; echo w) | sudo fdisk $DEVICE
+        let index++
+    done
+
+flush_changes
+
+else
+    echo 'No partitions found.'
+fi
+
+# Load the relevant sfdisk format strategy
+FILE=${PWD}/strategies/${STRATEGY}.strategy
+
+if [ -e "$FILE" ]; then
+    echo 'Formatting' $DEVICE 'with' $STRATEGY 'strategy'
+else
+    echo "File does not exist, I dunno how you managed to get here, you shouldn't have, but you did, so well done, but im going to exit now!"
+    exit 1
+fi
+
+# Apply format strategy
+sfdisk $DEVICE < "${PWD}/strategies/${STRATEGY}.strategy"
+
+flush_changes
+
+# Check we have the correct partitions
+get_device_partitions
+
+if [[ $STRATEGY == 'rpi' ]] ; then
+    
+    if [[ ${#PARTITIONS[@]} > 0 ]] ; then
+    echo 'The following partitions were created ' printf '%s\n' "${PARTITIONS[@]}"
+
+        LABEL=""
+        index=0
+        partition_no=1
+        for i in "${PARTITIONS[@]}"; do
+        echo $i
+            LABEL=`lsblk $i -a -f -o LABEL -n`
+            echo 'current context ' $LABEL 
+            echo ">>>>>>>" ${PARTITION_LABELS[${index}]} "<<<<<<"
+            if [[ $LABEL != ${PARTITION_LABELS[${index}]} ]] ; then
+                echo "Bad ${LABEL} partition"
+                exit 1
+            else
+                echo "${LABEL} Partition is all good!"
+            fi
+
+            let index++
+            let partition_no++
+        done
+
+    fi
+            # if [[ partition_no -eq 1 ]] ; then
+            #     if [[ $LABEL != ${PARTITION_LABELS[0]} ]] ; then
+            #         echo "Bad OPS partition"
+            #         exit 1
+            #     fi
+            # fi
+
+            # if [[ partition_no -eq 2 ]] ; then
+            #     if [[ $LABEL != "KEYS" ]] ; then
+            #         echo "Bad KEYS partition"
+            #         exit 1
+            #     fi
+            # fi
+
+            # if [[ partition_no -eq 3 ]] ; then
+            #     if [[ $LABEL != "SYS" ]] ; then
+            #         echo "Bad SYS partition"
+            #         exit 1
+            #     fi
+            # fi
+    
+elif [[ $STRATEGY == 'standard' ]] ; then
+    echo 'implement standard strategy partition validation!'
+fi
+
+# Get CryptOS release
+TDIR=`mktemp -d`
+echo "Temp dir created ${TDIR}"
+mkdir "${TDIR}/src"
+
+STATUS=`curl "${RELEASE_URL}/${RELEASE}/${ISOARCH}/${CRYPTOS_ARMHF}" -o "${TDIR}/${CRYPTOS_ARMHF}" -w "%{http_code}"`
+
+# Check curl http status code
+echo $STATUS
+if [[ $STATUS -ne 200 ]] ; then
+    echo "recieved a ${STATUS} error code, expected to get a 200"
+    exit 1
+fi
+
+# Start rPi flash strategy
+if [[ $STRATEGY == 'rpi' ]] ; then
+    # Un-tar 
+    tar -xzvf "${TDIR}/${CRYPTOS_ARMHF}" -C $TDIR/src
+    rpi_flash
+fi
+
+# Start standard flash strategy
+if [[ $STRATEGY == 'standard' ]] ; then
+    echo 'Implement standard flash strategy!'
+fi
+
+echo "For now, we are done!"
