@@ -1,8 +1,6 @@
 #!/bin/bash
 version=0.0.1
 RELEASE_URL=http://iso.cryports.acf.atlas/
-CRYPTOS_ARMHF=alpine-rpi-edge-armhf.tar.gz
-declare -a PARTITION_LABELS=('OPS' 'KEYS' 'SYS');
 
 # Check script is being run as root
 if [ `id -u` != 0 ] ; then
@@ -23,13 +21,16 @@ OPTIONS:
    -d	   Valid path to usb/sd device
    -z      Zero out SD card
    -s	   Card format strategy for different host systems. Can be either rpi or standard
-   -r      Select the CryptOS release type, there are three actively maintained release types - stable, testing, unstable
-   -a	   Select the desired architecture - x86_64, armhf
+   -r      Select the CryptOS release type, there are three actively maintained release types - stable, testing, unstable. Default stable.
+   -a	   Select the desired architecture - x86_64, armhf.
+   -p1s    Partition 1 (OPS) size. Default 500mb.
+   -p2s    Partition 2 (KEYS) size. Default 250mb.
+   -p3a    Partition 3 (SYS) size. Default All unallocated space.
    -v      Verbose
 EOF
 }
 
-# Set empty arg vars
+# Set empty vars
 DEVICE=
 ZERO=
 STRATEGY=
@@ -37,40 +38,48 @@ RELEASE=
 MIRROR=
 ISOARCH=
 VERBOSE=
+align_to_sector=
+DEVICE_SIZE=
+
+CRYPTOS_ARMHF=alpine-rpi-edge-armhf.tar.gz
+ONEMB=1048576
+
+declare -a PARTITION_LABELS=('OPS' 'KEYS' 'SYS');
+declare -a PARTITION_SIZES=(500 250 'AUS');
 
 # Get opts and set vars
 while getopts “d:z:s:r:a:v” OPTION
 do
      case $OPTION in
-         h)
-             usage
-             exit 1
-             ;;
-         d)
-             DEVICE=$OPTARG
-             ;;
-         z)
-             ZERO=$OPTARG
-             ;;
-	 s)
-	     STRATEGY=$OPTARG
-	     ;;
-         r)
-	     RELEASE=$OPTARG
-	     ;;
-	 m)
-	     MIRROR=$OPTARG
-             ;;
-	 a)
-	     ISOARCH=$OPTARG
-             ;;
-         v)
-             VERBOSE=1
-             ;;
-         ?)
-             usage
-             exit
-             ;;
+        h)
+            usage
+            exit 1
+            ;;
+        d)
+            DEVICE=$OPTARG
+            ;;
+        z)
+            ZERO=$OPTARG
+            ;;
+        s)
+            STRATEGY=$OPTARG
+            ;;
+        r)
+            RELEASE=$OPTARG
+            ;;
+        m)
+            MIRROR=$OPTARG
+            ;;
+        a)
+            ISOARCH=$OPTARG
+            ;;
+        v)
+            VERBOSE=1
+            ;;
+        ?)
+            usage
+            exit
+            ;;
      esac
 done
 
@@ -86,13 +95,19 @@ if [[ ! -e $DEVICE ]] ; then
     exit 1
 fi
 
+# Get device block name
+BLK_NAME=`echo $DEVICE | cut -d '/' -f3`;
+DEVICE_SIZE=`fdisk $DEVICE -l | grep "Disk $DEVICE" | awk '{print $3}'`
+DEVICE_SIZE_UNIT=`fdisk $DEVICE -l | grep "Disk $DEVICE" | awk '{print $4}'`
+physical_block_size=$(cat /sys/block/$BLK_NAME/queue/physical_block_size)    
+
 # Check release CryptOS release type
 if [[ -z $RELEASE ]] ; then
+    echo "No release selected. Using default stable release."
     RELEASE=stable
 elif [[ $RELEASE != "stable" ]] && [[ $RELEASE != "testing" ]] && [[ $RELEASE != "unstable" ]] ; then
-    echo 'Unknown CryptOS release type set'
-    usage
-    exit 1
+    echo "Unknown $RELEASE selected. Selecting default stable release."
+    RELEASE=stable
 fi
 
 # Check disk formatting strategy exists
@@ -108,9 +123,8 @@ fi
 
 # Check the target arch and sanity check
 if [[ $ISOARCH != "x86_64" ]] && [[ $ISOARCH != "armhf" ]] ; then
-    echo 'How am I supposed to know what architecture to build for if you dont tell me!'
-    usage
-    exit 1
+    echo 'Using default x86_64 architecture.'
+    $ISOARCH="x86_64"
 elif [[ $STRATEGY == "rpi" && $ISOARCH != "armhf" ]] ; then
     echo $STRATEGY "must use the armhf architecture, you set" $ISOARCH "which is impossible!"
     exit 1
@@ -134,18 +148,13 @@ echo -n "This is a destructive operation and will delete everything on ${DEVICE}
 read answer
 
 if [[ "$answer" != "${answer#[Yy]}" ]] ;then
-    echo 'Uploading your porn collection to the cloud and wiping your HDD now. LOL'
-    echo -ne '#####                     (33%)\r'
-    sleep 1
-    echo -ne '#############             (66%)\r'
-    sleep 1
-    echo -ne '#######################   (100%)\r'
-    echo -ne '\n'
+    echo 'Lets flash, together...'
 else
     exit 1
 fi
 
 get_device_partitions() {
+    echo 'Getting device partitions'
     PARTITIONS=($(sudo fdisk -l $DEVICE | grep '^/dev' | cut -d' ' -f1))
 }
 
@@ -155,36 +164,110 @@ flush_changes() {
     partprobe $DEVICE -s
 }
 
-# Flash strategy for rPi
-rpi_flash() {
-    echo 'Starting rPi flash strategy'
+# Calculate the preferred sector alignment when a optimal_io_size is known
+optimal_io_size_calc() {
+    echo 'Calculation offset when optimal_io_size is known'
+    local alignment_offset
 
+    # alignment_offset: how many bytes the beginning of the device is offset from the disk's natural alignment [bytes]
+    alignment_offset=$(cat /sys/block/$BLK_NAME/alignment_offset)
+    start_sector=$(( ($optimal_io_size + $alignment_offset)/$physical_block_size ))
+}
 
-    # mount partitions
-    index=1    
+# Calculate the preferred sector alignment for default case of 1 MiB
+default_io_size_calc() {
+    echo 'Calculation offset when optimal_io_size is un-known'
+    local alignment_offset
+
+    # alignment_offset: how many bytes the beginning of the device is offset from the disk's natural alignment [bytes]
+    alignment_offset=$(cat /sys/block/$BLK_NAME/alignment_offset)
+    start_sector=$(( ($ONEMB + $alignment_offset) / $physical_block_size ));
+}
+
+mount_partitions() {
+    echo 'Mounting partitions'
+
+    get_device_partitions
+
+    index=0    
     for i in "${PARTITION_LABELS[@]}"; do
         if [ ! -d "/mnt/flasher/${i}/" ]; then
             echo "Creating flasher ${i} mnt dir"
             mkdir -p /mnt/flasher/${i}
-        fi
+        fi # @TODO change to allow mnt dir to be passed as an optional arg
         echo "mounting ${i} partition to /mnt/flasher/${i}"
         MNT_TEST=`mount | grep "/mnt/flasher/${i}" | awk ' {print $3}'`
 
         if [[ MNT_TEST != "/mnt/flasher/${i}" ]] ; then
-            mount -v -w -n /dev/mmcblk0p1 /mnt/flasher/${i}/
+            mount -v -w -l ${PARTITIONS[index]} /mnt/flasher/${i}/
         fi
         let index++
     done
+}
+
+unmount_partitions() {
+    echo 'Un-mounting partitions'
+
+    get_device_partitions
+
+    for i in "${PARTITIONS[@]}"; do
+        echo "Un-mounting "$i
+        umount -vAl ${i}
+    done    
+}
+
+delete_paritions() {
+    echo "Deleting partitions"
+    
+    get_device_partitions
+
+    if [[ ${#PARTITIONS[@]} > 0 ]] ; then
+        echo 'found the following partitions ' printf '%s\n' "${PARTITIONS[@]}"
+        # Delete all them partitions
+        index=1
+        for i in "${PARTITIONS[@]}"; do
+            echo "Say good bye to " $i
+            (echo d; echo $index; echo w) | sudo fdisk $DEVICE
+            let index++
+        done
+
+    flush_changes sync -f
+    else
+        echo 'No partitions found.'
+    fi
+}
+
+clean_device() {
+    # Delete device MBR
+    dd if=/dev/zero of=$DEVICE count=1 status=progress bs=$physical_block_size
+}
+
+wipe_device() {
+    echo Wiping $DEVICE
+    dd if=/dev/zero of=$DEVICE conv=fsync status=progress bs=$physical_block_size
+}
+
+# Flash strategy for rPi
+rpi_flash() {
+    echo 'Starting rPi flash strategy'
 
     # Copy FS to target
     cp -Rfv $TDIR/src/* /mnt/flasher/OPS/
 
     # Add rPi usercfg
+    echo "touching rPi usercfg.txt"
+    rm -v /mnt/flasher/OPS/usercfg.txt
     touch /mnt/flasher/OPS/usercfg.txt
-    echo "enable_urt=1" >> /mnt/flasher/OPS/usercfg.txt
+    echo "enable_uart=1" >> /mnt/flasher/OPS/usercfg.txt
+    
+    echo "fixing some boot parameters for our partition strategy"
+    sed -i -e 's/mmcblk0p2/mmcblk0p3/g' /mnt/flasher/OPS//boot/config-rpi
+    sed -i -e 's/mmcblk0p2/mmcblk0p3/g' /mnt/flasher/OPS//boot/config-rpi2
+
+    cp ${PWD}/post-install.sh /mnt/flasher/KEYS
+    cp ${PWD}/answer-file.txt /mnt/flasher/KEYS
 
     sync -f
-
 }
 
 # Flash strategy from standard iso
@@ -192,110 +275,128 @@ standard_flash() {
     echo 'Starting standard iso flash strategy'
 }
 
+##### Start script #####
+
 # Get mount point of device
 MNT=`findmnt -noSOURCE,TARGET $DEVICE | cut -f 2,3 -d ' '`
 
-# Un-mount it if mounted
-if [[ -z "$MNT" ]] ; then
-    echo $DEVICE 'not mounted'
-else
-    echo "Un-mounting "$DEVICE " at " $MNT
-    umount -A ${MNT} -l
-fi
+# delete partitions on device
+delete_paritions
+
+# Clean device
+clean_device
 
 # Zero out SD card
 if [[ $ZERO ]] ; then
-    echo Wiping $DEVICE
-    dd if=/dev/zero of=$DEVICE conv=fsync status=progress
+    wipe_device
 fi
 
 # Get all partitions that belong to target device
 get_device_partitions
 
-if [[ ${#PARTITIONS[@]} > 0 ]] ; then
-    echo 'found the following partitions ' printf '%s\n' "${PARTITIONS[@]}"
-
-    # Delete all them partitions
-    index=1
-    for i in "${PARTITIONS[@]}"; do
-        echo "Say good bye to " $i
-        (echo d; echo $index; echo w) | sudo fdisk $DEVICE
-        let index++
-    done
-
-flush_changes
-
+# Get devices block sector info
+if [[ ! -d "/sys/block/$BLK_NAME/queue/optimal_io_size" ]] ; then
+    optimal_io_size=$(cat /sys/block/$BLK_NAME/queue/optimal_io_size)
 else
-    echo 'No partitions found.'
+    echo "Cant find /sys/block/${BLK_NAME} device"; exit 1;
 fi
 
-# Load the relevant sfdisk format strategy
-FILE=${PWD}/strategies/${STRATEGY}.strategy
-
-if [ -e "$FILE" ]; then
-    echo 'Formatting' $DEVICE 'with' $STRATEGY 'strategy'
-else
-    echo "File does not exist, I dunno how you managed to get here, you shouldn't have, but you did, so well done, but im going to exit now!"
+if [[ "$optimal_io_size" == "00" ]] || [[ "$physical_block_size" == "00" ]] ; then
+    echo Internal error: Failed to extract block device information!
     exit 1
 fi
 
-# Apply format strategy
-sfdisk $DEVICE < "${PWD}/strategies/${STRATEGY}.strategy"
+if [[ $optimal_io_size == 0 ]]; then
+    echo Using default 1 MiB default alignment
+    default_io_size_calc align_to_sector $DEVICE
+else
+    echo Using optimal_io_size: $optimal_io_size
+    optimal_io_size_calc align_to_sector $DEVICE $optimal_io_size
+fi
+
+echo "start sector " $start_sector;
+
+# Define start/end sectors for each partition
+OPS_SECTOR_END=$((1000000))
+KEYS_SECTOR_START=$((1000001))
+KEYS_SECTOR_END=$((1500000))
+SYS_SECTOR_START=$((1500001))
+
+echo $DEVICE_SIZE_UNIT;
+if [[ $DEVICE_SIZE_UNIT == "GiB," ]] ; then
+    parted $DEVICE mklabel msdos
+else
+    echo 'Implement handling of larger drives';
+    exit 420;
+fi
+
+sync -f
+
+# Parition OPS sector
+echo 'Partitioning the OPS sector'
+parted ${DEVICE} mkpart -a optimal primary fat16 ${start_sector}s ${OPS_SECTOR_END}s
+sync -f
+
+# Get partition 1 name
+if [[ $STRATEGY == "rpi" ]] ; then
+    P1NAME=/dev/${BLK_NAME}p1
+else
+    echo "implement naming convention for standard strat";
+    exit 1;
+fi
+
+# Give parition a FS
+echo 'applying a FAT16 file system to OPS partition'
+mkdosfs ${P1NAME}
+sync -f
+
+# Set parition label
+echo 'Giving OPS sector the OPS Label'
+fatlabel P1NAME OPS
+sync -f
+
+# Partition KEYS sector
+echo 'Partitioning the KEYS sector'
+parted ${DEVICE} mkpart -a optimal primary fat32 ${KEYS_SECTOR_START}s ${KEYS_SECTOR_END}s
+sync -f
+
+# Get partition 2 name
+if [[ $STRATEGY == "rpi" ]] ; then
+    P2NAME=/dev/${BLK_NAME}p2
+else
+    echo "implement naming convention for standard strat";
+    exit 1;
+fi
+
+# Give partition a FS
+echo 'applying a FAT32 file system to KEYS partition'
+mkdosfs ${P2NAME}
+sync -f
+
+# Parition SYS sector
+parted ${DEVICE} mkpart -a optimal primary ext4 ${SYS_SECTOR_START}s 100%
+sync -f
+
+# Get partition 3 name
+if [[ $STRATEGY == "rpi" ]] ; then
+    P3NAME=/dev/${BLK_NAME}p3
+else
+    echo "implement naming convention for standard strat";
+    exit 1;
+fi
+
+# Give partition a FS
+echo 'applying a EXT2 file system to SYS partition'
+mkfs.ext4 ${P3NAME}
+sync -f
+
+# Set parition label
+e2label ${P3NAME} SYS
+sync -f
+
+mount_partitions
 
 flush_changes
-
-# Check we have the correct partitions
-get_device_partitions
-
-if [[ $STRATEGY == 'rpi' ]] ; then
-    
-    if [[ ${#PARTITIONS[@]} > 0 ]] ; then
-    echo 'The following partitions were created ' printf '%s\n' "${PARTITIONS[@]}"
-
-        LABEL=""
-        index=0
-        partition_no=1
-        for i in "${PARTITIONS[@]}"; do
-        echo $i
-            LABEL=`lsblk $i -a -f -o LABEL -n`
-            echo 'current context ' $LABEL 
-            echo ">>>>>>>" ${PARTITION_LABELS[${index}]} "<<<<<<"
-            if [[ $LABEL != ${PARTITION_LABELS[${index}]} ]] ; then
-                echo "Bad ${LABEL} partition"
-                exit 1
-            else
-                echo "${LABEL} Partition is all good!"
-            fi
-
-            let index++
-            let partition_no++
-        done
-
-    fi
-            # if [[ partition_no -eq 1 ]] ; then
-            #     if [[ $LABEL != ${PARTITION_LABELS[0]} ]] ; then
-            #         echo "Bad OPS partition"
-            #         exit 1
-            #     fi
-            # fi
-
-            # if [[ partition_no -eq 2 ]] ; then
-            #     if [[ $LABEL != "KEYS" ]] ; then
-            #         echo "Bad KEYS partition"
-            #         exit 1
-            #     fi
-            # fi
-
-            # if [[ partition_no -eq 3 ]] ; then
-            #     if [[ $LABEL != "SYS" ]] ; then
-            #         echo "Bad SYS partition"
-            #         exit 1
-            #     fi
-            # fi
-    
-elif [[ $STRATEGY == 'standard' ]] ; then
-    echo 'implement standard strategy partition validation!'
-fi
 
 # Get CryptOS release
 TDIR=`mktemp -d`
@@ -322,5 +423,7 @@ fi
 if [[ $STRATEGY == 'standard' ]] ; then
     echo 'Implement standard flash strategy!'
 fi
+
+unmount_partitions
 
 echo "For now, we are done!"

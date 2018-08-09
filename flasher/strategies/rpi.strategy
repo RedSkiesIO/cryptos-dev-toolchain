@@ -1,8 +1,8 @@
 label: dos
-label-id: 0x33db17a4
+label-id: 0xe9f46e0c
 device: /dev/mmcblk0
 unit: sectors
 
-/dev/mmcblk0p1 : start=        2048, size=      501760, type=c, bootable
-/dev/mmcblk0p2 : start=      503808, size=      500000, type=c
-/dev/mmcblk0p3 : start=     1005568, size=    29247488, type=83, bootable
+/dev/mmcblk0p1 : start=        2048, size=      975663, type=c
+/dev/mmcblk0p2 : start=      978944, size=      488282, type=c
+/dev/mmcblk0p3 : start=     1468416, size=    29647872, type=83, bootable
