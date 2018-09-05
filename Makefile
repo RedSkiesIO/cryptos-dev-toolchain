@@ -76,11 +76,11 @@ build-conf:
 
 build-standard-x8664-iso:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/cryports:/home/builder/cryports \
-		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
-		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
-		cryptos-dev-toolchain:dev \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PACKAGES_DIR}/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v ${ISO_DIR}/artifacts/repo/iso/:/home/builder/iso \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
 		sh -c " ./cryports/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -93,11 +93,11 @@ build-standard-x8664-iso:
 
 build-standard-x86-iso:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/cryports:/home/builder/cryports \
-		-v `pwd`/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
-		-v `pwd`/artifacts/repo/iso/:/home/builder/iso \
-		cryptos-dev-toolchain:dev \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PACKAGES_DIR}/artifacts/repo/cryptos/:/home/builder/repo/cryptos \
+		-v ${ISO_DIR}/artifacts/repo/iso/:/home/builder/iso \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
 		sh -c "./cryports/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
