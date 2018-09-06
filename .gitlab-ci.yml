@@ -1,0 +1,39 @@
+stages:
+- pull-submodules
+- build-standardx8664
+- build-armhf
+- build-aarch64
+
+pull-submodules:
+  stage: pull-submodules
+  script:
+    - git checkout master
+    - git pull origin master
+    - git pull --recurse-submodules
+    - git submodule update --remote --recursive
+  only:
+    - release/standardx8664  
+    - release/armhf
+    - release/aarch64
+    
+build-standardx8664:
+  stage: build-standardx8664
+  script:
+    - make build-standard-x8664-iso
+  only:
+    - release/standard
+    - release/standardx8664
+
+build-armhf:
+  stage: build-armhf
+  script:
+    - git checkout master
+  only:
+    - release/armhf
+    
+build-aarch64:
+  stage: build-aarch64
+  script:
+    - git checkout master
+  only:
+    - release/aarch64
