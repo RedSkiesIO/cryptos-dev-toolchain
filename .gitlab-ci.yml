@@ -37,4 +37,3 @@ build-aarch64:
     - git checkout master
   only:
     - release/aarch64
-
