@@ -1,8 +1,8 @@
 stages:
 - pull-submodules
 - build-standardx8664
-- build-armhf
-- build-aarch64
+- build-rpiarmhf
+- build-rpiaarch64
 
 pull-submodules:
   stage: pull-submodules
@@ -21,19 +21,18 @@ build-standardx8664:
   script:
     - make build-standard-x8664-iso
   only:
-    - release/standard
     - release/standardx8664
 
-build-armhf:
-  stage: build-armhf
+build-rpiarmhf:
+  stage: build-rpiarmhf
   script:
     - git checkout master
   only:
-    - release/armhf
+    - release/rpiarmhf
     
-build-aarch64:
-  stage: build-aarch64
+build-rpiaarch64:
+  stage: build-rpiaarch64
   script:
     - git checkout master
   only:
-    - release/aarch64
+    - release/rpiaarch64
