@@ -1,16 +1,3 @@
-# do a build-repo target for each arch type
-.PHONY: build-repo
-build-repo: build-csyslinux build-sdk build-baselayout build-base build-cmkinitfs build-conf build-opennode 
-
-.PHONY: sign-x8664
-sign-x8664: sign-x8664
-
-.PHONY: sign-noarch
-sign-noarch: sign-noarch
-
-.PHONY: sign-all
-sign-all: sign-x8664 sign-noarch
-
 build-standard-x8664-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
@@ -164,33 +151,35 @@ build-uboot-armhf-iso:
 			--arch armhf \
 			--profile uboot"
 
+sign-all: sign-x8664 sign-noarch
+
 sign-x8664:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
-		cryptos-dev-toolchain:dev \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
 		sh -c "cd /home/builder/packages && apk index -o x86_64/APKINDEX.tar.gz x86_64/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
 sign-noarch:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
-		cryptos-dev-toolchain:dev \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
 		sh -c "cd /home/builder/packages && apk index -o noarch/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
 sign-armhf:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
-		dbuild:armhf \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:armhf \
 		sh -c "cd /home/builder/packages/armhf && apk index -o APKINDEX.tar.gz && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa APKINDEX.tar.gz"
 
 sign-aarch64:
 	docker run \
-		-v `pwd`/_data/abuild:/home/builder/.abuild \
-		-v `pwd`/artifacts/repo/cryptos:/home/builder/packages/ \
-		cryptos-dev-toolchain:dev \
+		-v ${KEY_DIR}:/home/builder/.abuild \
+		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
+		registry.gitlab.engr.atlas:443/cryptos/docker-build:aarch64 \
 		sh -c "cd /home/builder/packages && apk index -o aarch64/APKINDEX.tar.gz noarch/*.apk && abuild-sign -k /home/builder/.abuild/james.kirby@atlascityfinace.com-5b1125f6.rsa x86_64/APKINDEX.tar.gz"
 
 clean-docker:
-	docker rm -f $(docker ps -a -q)
+	docker system prune --all
