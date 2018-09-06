@@ -21,7 +21,7 @@ build-rpiarmhf:
     - git pull origin release/rpiarmhf
     - git pull --recurse-submodules
     - git submodule update --remote --recursive  
-    - make build-standard-rpiarmhf-iso
+    - make build-rpi-armhf-iso
   only:
     - release/rpiarmhf
     
@@ -32,6 +32,6 @@ build-rpiaarch64:
     - git pull origin release/rpiaarch64
     - git pull --recurse-submodules
     - git submodule update --remote --recursive  
-    - make build-standard-rpiaarch64-iso
+    - make build-rpi-rpiaarch64-iso
   only:
     - release/rpiaarch64
