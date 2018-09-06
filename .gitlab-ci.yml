@@ -21,6 +21,7 @@ build-standardx8664:
   script:
     - make build-standard-x8664-iso
   only:
+    - release/standard
     - release/standardx8664
 
 build-armhf:
