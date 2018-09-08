@@ -5,7 +5,7 @@ build-standard-x8664-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
-		sh -c " ./cryports/scripts/mkimage.sh \
+		sh -c " ./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -22,7 +22,7 @@ build-standard-x86-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -39,7 +39,7 @@ build-standard-ppc64le-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:ppc64le \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -56,7 +56,7 @@ build-virtual-x8664-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -73,7 +73,7 @@ build-virtual-x86-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x86 \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -90,7 +90,7 @@ build-rpi-aarch64-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:aarch64 \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -107,7 +107,7 @@ build-rpi-armhf-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:armhf \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -124,7 +124,7 @@ build-uboot-aarch64-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:aarch64 \
-		sh -c" ./cryports/scripts/mkimage.sh \
+		sh -c" ./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -141,7 +141,7 @@ build-uboot-armhf-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:armhf \
-		sh -c "./cryports/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
