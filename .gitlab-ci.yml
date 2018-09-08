@@ -1,10 +1,11 @@
 stages:
+- build-master
 - build-standardx8664
 - build-rpiarmhf
 - build-rpiaarch64
 
-build-standardx8664:
-  stage: build-standardx8664
+build-master:
+  stage: build-master
   script:
     - git checkout master
     - git pull origin master
