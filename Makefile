@@ -1,7 +1,7 @@
 build-standard-x8664-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
@@ -52,7 +52,7 @@ build-standard-ppc64le-iso:
 build-virtual-x8664-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		registry.gitlab.engr.atlas:443/cryptos/docker-build:x8664 \
