@@ -12,6 +12,7 @@ build-standardx8664:
     - git submodule update --remote --recursive  
     - make build-standard-x8664-iso
   only:
+    - master
     - release/standardx8664
     - develop/standardx8664
 
