@@ -1,6 +1,21 @@
-[submodule "cryports"]
-	path = cryports
-	url = git@gitlab.engr.atlas:cryptos/cryports.git
-[submodule "dbuild"]
-	path = dbuild
-	url = git@gitlab.engr.atlas:cryptos/docker-build.git
+[submodule "cryports/cryptos-syslinux"]
+	path = cryports/cryptos-syslinux
+	url = git@gitlab.engr.atlas:cryports/syslinux.git
+[submodule "cryports/cryptos-mkinitfs"]
+	path = cryports/cryptos-mkinitfs
+	url = git@gitlab.engr.atlas:cryports/mkinitfs.git
+[submodule "cryports/cryptos-sdk"]
+	path = cryports/cryptos-sdk
+	url = git@gitlab.engr.atlas:cryports/sdk.git
+[submodule "cryports/cryptos-conf"]
+	path = cryports/cryptos-conf
+	url = git@gitlab.engr.atlas:cryports/conf.git
+[submodule "cryports/cryptos-base"]
+	path = cryports/cryptos-base
+	url = git@gitlab.engr.atlas:cryports/base.git
+[submodule "cryports/cryptos-baselayout"]
+	path = cryports/cryptos-baselayout
+	url = git@gitlab.engr.atlas:cryports/base-layout.git
+[submodule "cryports/opennode-base"]
+	path = cryports/opennode-base
+	url = git@gitlab.engr.atlas:cryports/opennode-base.git
