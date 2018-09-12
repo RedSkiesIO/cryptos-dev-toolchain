@@ -1,7 +1,19 @@
 stages:
+- build-master
 - build-standardx8664
 - build-rpiarmhf
 - build-rpiaarch64
+
+build-master:
+  stage: build-master
+  script:
+    - git checkout master
+    - git pull origin master
+    - git pull --recurse-submodules
+    - git submodule update --remote --recursive  
+    - make build-standard-x8664-iso
+  only:
+    - master
 
 build-standardx8664:
   stage: build-standardx8664
