@@ -9,7 +9,7 @@ build-standard-x8664-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86_64 \
@@ -26,7 +26,7 @@ build-standard-x86-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \		
 			--arch x86 \
@@ -43,7 +43,7 @@ build-standard-ppc64le-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch ppc64le \
@@ -60,7 +60,7 @@ build-virtual-x8664-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86_64 \
@@ -77,7 +77,7 @@ build-virtual-x86-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86 \
@@ -94,7 +94,7 @@ build-rpi-aarch64-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch aarch64 \
@@ -111,7 +111,7 @@ build-rpi-armhf-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch armhf \
@@ -128,7 +128,7 @@ build-uboot-aarch64-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch aarch64 \
@@ -145,7 +145,7 @@ build-uboot-armhf-iso:
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-			--extra-repository http://10.84.172.107 \
+			--extra-repository https://cryptos.host \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch armhf \
