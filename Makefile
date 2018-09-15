@@ -11,7 +11,7 @@ build-standard-x8664-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86_64 \
 			--profile standard"
 
@@ -28,7 +28,7 @@ build-standard-x86-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \		
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \		
 			--arch x86 \
 			--profile standard"
 
@@ -45,7 +45,7 @@ build-standard-ppc64le-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch ppc64le \
 			--profile standard"
 
@@ -62,7 +62,7 @@ build-virtual-x8664-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86_64 \
 			--profile virt"
 
@@ -79,7 +79,7 @@ build-virtual-x86-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch x86 \
 			--profile virt"
 
@@ -96,7 +96,7 @@ build-rpi-aarch64-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch aarch64 \
 			--profile rpi"
 
@@ -113,7 +113,7 @@ build-rpi-armhf-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch armhf \
 			--profile rpi"
 
@@ -130,7 +130,7 @@ build-uboot-aarch64-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch aarch64 \
 			--profile uboot"
 
@@ -147,7 +147,7 @@ build-uboot-armhf-iso:
 			--repository http://dl-cdn.alpinelinux.org/alpine/v3.8/main \
 			--extra-repository https://cryports.host/packages/cryptos \
 			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/community \
-			--extra-repository http://dl-cdn.alpinelinux.org/alpine/v3.8/testing \
+			--extra-repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			--arch armhf \
 			--profile uboot"
 
