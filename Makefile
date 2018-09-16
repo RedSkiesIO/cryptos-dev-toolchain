@@ -4,7 +4,7 @@ build-standard-x8664-iso:
 		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-buildx8664 \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
 		sh -c " ./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
