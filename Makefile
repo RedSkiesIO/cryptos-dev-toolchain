@@ -90,7 +90,7 @@ build-rpi-aarch64-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		cryptosregistry.azurecr.io/docker-build:x8664 \
-		sh -c"./cryptos/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -107,7 +107,7 @@ build-rpi-armhf-iso:
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		cryptosregistry.azurecr.io/docker-build:x8664 \
-		sh -c"./cryptos/scripts/mkimage.sh \
+		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
