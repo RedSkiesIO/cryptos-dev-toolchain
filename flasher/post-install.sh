@@ -2,7 +2,7 @@
 
 echo "
 
-http://10.84.172.107
+https://cryports.host/packages/cryptos
 http://dl-cdn.alpinelinux.org/alpine/edge/main
 http://dl-cdn.alpinelinux.org/alpine/edge/testing
 " >> /etc/apk/repositories
