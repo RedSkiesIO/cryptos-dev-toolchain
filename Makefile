@@ -18,7 +18,7 @@ build-standard-x8664-iso:
 build-standard-x86-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
 		cryptosregistry.azurecr.io/docker-build:x8664 \
@@ -35,10 +35,10 @@ build-standard-x86-iso:
 build-standard-ppc64le-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:ppc64le \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -69,10 +69,10 @@ build-virtual-x8664-iso:
 build-virtual-x86-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:x86 \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -86,11 +86,11 @@ build-virtual-x86-iso:
 build-rpi-aarch64-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:aarch64 \
-		sh -c "./cryptos/scripts/mkimage.sh \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
+		sh -c"./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -103,11 +103,11 @@ build-rpi-aarch64-iso:
 build-rpi-armhf-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:armhf \
-		sh -c "./cryptos/scripts/mkimage.sh \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
+		sh -c"./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -120,11 +120,11 @@ build-rpi-armhf-iso:
 build-uboot-aarch64-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:aarch64 \
-		sh -c" ./cryptos/scripts/mkimage.sh \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
+		sh -c " ./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
 			--repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
@@ -137,10 +137,10 @@ build-uboot-aarch64-iso:
 build-uboot-armhf-iso:
 	docker run \
 		-v ${KEY_DIR}:/home/builder/.abuild \
-		-v ${PWD}/cryports:/home/builder/cryports \
+		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:armhf \
+		cryptosregistry.azurecr.io/docker-build:x8664 \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
