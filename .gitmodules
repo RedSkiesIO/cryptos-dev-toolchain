@@ -22,3 +22,9 @@
 [submodule "cryptos"]
 	path = cryptos
 	url = git@gitlab.engr.atlas:cryptos/cryptos.git
+[submodule "cryports/opennode-base"]
+	path = cryports/opennode-base
+	url = git@gitlab.engr.atlas:cryports/opennode-base.git
+[submodule "cryports/opennode-setup-gui"]
+	path = cryports/opennode-setup-gui
+	url = git@gitlab.engr.atlas:cryports/opennode-setup-gui.git
