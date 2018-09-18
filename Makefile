@@ -89,7 +89,7 @@ build-rpi-aarch64-iso:
 		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:x8664 \
+		cryptosregistry.azurecr.io/docker-build:aarch64 \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -106,7 +106,7 @@ build-rpi-armhf-iso:
 		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:x8664 \
+		cryptosregistry.azurecr.io/docker-build:armhf \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -123,7 +123,7 @@ build-uboot-aarch64-iso:
 		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:x8664 \
+		cryptosregistry.azurecr.io/docker-build:aarch64 \
 		sh -c " ./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
@@ -140,7 +140,7 @@ build-uboot-armhf-iso:
 		-v ${PWD}/cryptos:/home/builder/cryptos \
 		-v ${PACKAGES_DIR}:/home/builder/repo/cryptos \
 		-v ${ISO_DIR}:/home/builder/iso \
-		cryptosregistry.azurecr.io/docker-build:x8664 \
+		cryptosregistry.azurecr.io/docker-build:armhf \
 		sh -c "./cryptos/scripts/mkimage.sh \
 			--tag edge \
 			--outdir /home/builder/iso \
