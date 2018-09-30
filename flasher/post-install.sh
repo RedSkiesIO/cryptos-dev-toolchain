@@ -2,7 +2,7 @@
 
 echo "
 
-http://10.84.172.107
+https://cryports.host/packages/cryptos
 http://dl-cdn.alpinelinux.org/alpine/edge/main
 http://dl-cdn.alpinelinux.org/alpine/edge/testing
 " >> /etc/apk/repositories
@@ -10,11 +10,11 @@ http://dl-cdn.alpinelinux.org/alpine/edge/testing
 apk del chrony
 apk del chronyd
 
-setup-alpine -c /install/answer-file.txt
+setup-alpine -f answer-file.txt
 
 apk update
 
-apk add openntpd opennode acct e2fsprogs
+apk add openntpd acct e2fsprogs
 
 mount /dev/mmcblk0p2 /mnt
 
